@@ -47,7 +47,10 @@ try {
     return res.status(401).json({msg: "Invalid Credentials"});    
   }
 
-  const user = await bcrypt.compare(password, userExist.password);
+  // const user = await bcrypt.compare(password, userExist.password);
+  const user = await userExist.comparePassword()
+
+
   if (user) {
     res.status(200).json({msg: "Log in Successfull",
     token: await userExist.generateToken(),
