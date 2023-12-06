@@ -4,11 +4,14 @@ const app = express();
 const connectDb = require("./utils/db");
 const errorMiddleware = require("./middlewares/error-middleware");
 //routes
-const router = require("./routes/auth-router");
+const authRoute = require("./routes/auth-router");
+const contactRoute = require("./routes/contact-router");
 // middleware
 app.use(express.json());
 // routes
-app.use("/api/auth", router);
+app.use("/api/auth", authRoute);
+// contact route 
+app.use("/api/form", contactRoute);
 
 // error middleware
 app.use(errorMiddleware);
