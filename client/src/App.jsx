@@ -9,6 +9,7 @@ import Register from "./pages/Register";
 import Service from "./pages/Service";
 // Components 
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 
 const App = () => {
   return (
@@ -23,6 +24,7 @@ const App = () => {
         <Route path='/register' element={<Register/>} />
         <Route path='/service' element={<Service/>} />
       </Routes>
+      <Footer/>
       </BrowserRouter>
     </>
   )
