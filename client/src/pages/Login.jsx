@@ -1,4 +1,7 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+
+const URL = "http://localhost:5000/api/auth/login";
 
 const Login = () => {
 
@@ -7,19 +10,53 @@ const Login = () => {
     password: ""
   });
 
+  const navigate = useNavigate();
+
   const handleInput = (e) => {
     let name = e.target.name;
     let value = e.target.value;
 
-    setUser({
-      ...user,
-      [name] : value,
-    })
+    if (name !== undefined && value !== undefined) {
+      setUser({
+        ...user,
+        [name]: value,
+      });
+    } else {
+      console.error('Name or value is undefined:', name, value);
+    }
   };
-
-  const handleSubmit = (e) => {
+  const handleSubmit =  async (e) => {
     e.preventDefault();
     console.log(user);
+
+    try {
+      const response = await fetch(URL, {
+        method: "POST",
+        headers: {
+          "Content-Type" : "application/json" 
+        },
+        body: JSON.stringify(user)
+      });
+      if (response.ok) {
+        alert("Log in Successfull");
+        setUser({
+          email: "",
+          password: ""
+        });
+        navigate("/");
+        console.log(response);
+      }else{
+        alert("Invalid Credentials");
+        const errorData = await response.json();
+        console.log("Login Error", errorData);
+      }
+
+
+    } catch (error) {
+      console.log("Log in Error ", error);
+    }
+
+
   }
 
   return (
@@ -52,7 +89,7 @@ const Login = () => {
                       name="email"
                       placeholder="enter your email"
                       id="email"
-                      require
+                      required
                       autoComplete="off"
                       value={user.email}
                       onChange={handleInput}
@@ -68,7 +105,7 @@ const Login = () => {
                       name="password"
                       placeholder="enter your password"
                       id="password"
-                      require
+                      required
                       autoComplete="off"
                       value={user.password}
                       onChange={handleInput}

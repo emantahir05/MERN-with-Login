@@ -37,6 +37,7 @@ const register = async (req, res) => {
   }
 };
 
+// login
 const login = async(req, res) => {
 try {
   const {email, password} = req.body;
@@ -48,10 +49,10 @@ try {
   }
 
   // const user = await bcrypt.compare(password, userExist.password);
-  const user = await userExist.comparePassword()
+  const isPasswordMatch = await userExist.comparePassword(password);
 
 
-  if (user) {
+  if (isPasswordMatch) {
     res.status(200).json({msg: "Log in Successfull",
     token: await userExist.generateToken(),
     userId: userExist._id.toString(),

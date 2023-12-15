@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 
+const URL = "http://localhost:5000/api/auth/register";
 const Register = () => {
 
   const [user, setUser] = useState({
@@ -8,6 +10,8 @@ const Register = () => {
     phone: "",
     password:"",
   });
+
+  const navigate = useNavigate();
 
 
   // handling the inputs
@@ -23,9 +27,41 @@ const Register = () => {
     })
  }
 //  handle submit 
-const handleSubmit = (e) => {
+const handleSubmit = async (e) => {
   e.preventDefault();
   console.log(user);
+
+  // connecting with backend
+  try {
+    const response = await fetch(URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(user)
+    });
+  
+    if (response.ok) {
+      // Handle successful registration, e.g., redirect to login page
+      setUser({
+        username: "",
+        email: "",
+        phone: "",
+        password:"",
+      })
+      // console.log("Registration successful!");
+      console.log(response);
+      navigate("/login")
+    } else {
+      const errorData = await response.json();
+      console.error("Registration error:", errorData);
+    }
+  
+  } catch (error) {
+    console.error("Registration error:", error);
+  }
+ 
+
 }
   return (
     <>
@@ -56,7 +92,7 @@ const handleSubmit = (e) => {
                       name="username"
                       placeholder="enter your username"
                       id="username"
-                      require
+                      required
                       autoComplete="off"
                       value={user.username}
                       onChange={handleInput}
@@ -70,7 +106,7 @@ const handleSubmit = (e) => {
                       name="email"
                       placeholder="enter your email"
                       id="email"
-                      require
+                      required
                       autoComplete="off"
                       value={user.email}
                       onChange={handleInput}
