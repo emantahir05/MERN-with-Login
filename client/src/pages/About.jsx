@@ -1,6 +1,10 @@
 import React from 'react'
+import {useAuth} from "../store/auth";
 
 const About = () => {
+
+  const {user} = useAuth();
+
   return (
     <>
 
@@ -8,7 +12,8 @@ const About = () => {
         <section className="section-hero">
           <div className="container grid grid-two-cols">
             <div className="hero-content">
-            <p>Welcome to about Page!</p>
+            <p>Welcome { user ? `${user.username} to About Page` : `to About Page`
+              }</p>
             <h1>I am Eman Tahir</h1>
             <p>Learning MERN stack developement practicing this project <br />
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Dicta recusandae quam at consequuntur perferendis nam praesentium, velit libero ut optio molestiae quod numquam delectus porro aut minus modi atque repudiandae sapiente placeat, voluptas sed? Earum ratione maiores error explicabo dignissimos, deserunt aliquam repellendus officiis nobis nostrum, in dolorum velit sapiente!

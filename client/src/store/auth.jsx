@@ -1,9 +1,10 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("token"));
+  const [user, setUser] = useState("")
 
   const storeTokenInLS = (serverToken) => {
     return localStorage.setItem("token", serverToken);
@@ -18,8 +19,38 @@ export const AuthProvider = ({ children }) => {
     return localStorage.removeItem("token");
   };
 
+  // JWT authentication getting user data of loggedin user
+
+  const userAuthentication = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/user', {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      if (response.ok) {
+        const data = await response.json();
+        console.log("User data",data.userData);
+        setUser(data.userData );
+        
+      }else{
+        console.error("Error Fetching the data");
+      }
+    } catch (error) {
+      console.error("Error Fetching the data", error);
+      
+    }
+
+  }
+
+  useEffect(() => {
+    userAuthentication();
+  },[])
+
+
   return (
-    <AuthContext.Provider value={{ isLoggedin, storeTokenInLS, LogoutUser }}>
+    <AuthContext.Provider value={{ isLoggedin, storeTokenInLS, LogoutUser, user }}>
       {children}
     </AuthContext.Provider>
   );

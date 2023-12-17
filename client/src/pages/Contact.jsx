@@ -1,31 +1,46 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useAuth } from "../store/auth";
+
+
+const defaultContactFormData = {
+  username: "",
+  email: "",
+  message: "",
+};
 
 const Contact = () => {
 
-  const [contact, setContact] = useState({
-    username: "",
-    email: "",
-    message: ""
-  });
+  const [data, setData] = useState(defaultContactFormData);
+
+  
+  const { user } = useAuth();
+
+  console.log("Frontend user ", user.email);
+  const [userData, setUserData] = useState(true);
+
+  if (userData && user) {
+    setData({
+      username: user.username,
+      email: user.email,
+      message: "",
+    });
+    setUserData(false);
+  }
+
+
+
 
   // handleInput
   const handleInput = (e) => {
     const name = e.target.name;
     const value = e.target.value;
-
-
-    setContact({
-      ...contact,
-      [name] : value,
-    });
-
-
-  }
+    setData((prev) => ({ ...prev, [name]: value }));
+  };
 
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(contact);
+    console.log(data);
   };
 
   return (
@@ -51,7 +66,7 @@ const Contact = () => {
                   name="username"
                   id="username"
                   autoComplete="off"
-                  value={contact.username}
+                  value={data.username}
                   onChange={handleInput}
                   required
                 />
@@ -64,7 +79,7 @@ const Contact = () => {
                   name="email"
                   id="email"
                   autoComplete="off"
-                  value={contact.email}
+                  value={data.email}
                   onChange={handleInput}
                   required
                 />
@@ -76,7 +91,7 @@ const Contact = () => {
                   name="message"
                   id="message"
                   autoComplete="off"
-                  value={contact.message}
+                  value={data.message}
                   onChange={handleInput}
                   required
                   cols="30"
