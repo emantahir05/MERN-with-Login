@@ -18,14 +18,16 @@ const Contact = () => {
   console.log("Frontend user ", user.email);
   const [userData, setUserData] = useState(true);
 
-  if (userData && user) {
-    setData({
-      username: user.username,
-      email: user.email,
-      message: "",
-    });
-    setUserData(false);
-  }
+  useEffect(() => {
+    if (userData && user && Object.keys(data).every(key => data[key] === "")) {
+      setData({
+        username: user.username,
+        email: user.email,
+        message: "",
+      });
+      setUserData(false);
+    }
+  }, [userData, user, data]);
 
 
 
@@ -37,9 +39,31 @@ const Contact = () => {
     setData((prev) => ({ ...prev, [name]: value }));
   };
 
-
-  const handleSubmit = (e) => {
+  const URL = "http://localhost:5000/api/form/contact";
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    try {
+      const response = await fetch(URL, {
+        method: "POST",
+        headers: {
+          "Content-Type" : "application/json "
+        },
+        body: JSON.stringify(data)
+       } );
+       if (response.ok) {
+        setData((prevData) => ({
+          ...prevData,
+          message: ""
+        }));
+        const res_data = await response.json();
+        console.log(res_data);
+        alert("Message sent");
+        
+       }
+    } catch (error) {
+      console.error(`Error from sending the contact data to db ${error}`);
+      
+    }
     console.log(data);
   };
 
