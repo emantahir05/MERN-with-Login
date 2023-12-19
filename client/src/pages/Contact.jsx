@@ -39,6 +39,7 @@ const Contact = () => {
     setData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // handleSubmit 
   const URL = "http://localhost:5000/api/form/contact";
   const handleSubmit = async (e) => {
     e.preventDefault();
