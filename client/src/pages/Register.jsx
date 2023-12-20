@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../store/auth';
+import { toast } from 'react-toastify';
 
 const URL = "http://localhost:5000/api/auth/register";
 const Register = () => {
@@ -44,9 +45,9 @@ const handleSubmit = async (e) => {
       body: JSON.stringify(user)
     });
   
+    const res_data = await response.json();
+    console.log(res_data.extraDetails);
     if (response.ok) {
-      const res_data = await response.json();
-      console.log(res_data);
       // store token in localStorage
       storeTokenInLS(res_data.token);
       // Handle successful registration, e.g., redirect to login page
@@ -56,10 +57,11 @@ const handleSubmit = async (e) => {
         phone: "",
         password:"",
       })
+      toast.success("Registration Successful");
       // console.log("Registration successful!");
-      console.log(response);
-      navigate("/login")
+      navigate("/")
     } else {
+      toast.error(res_data.extraDetails ? res_data.extraDetails : res_data.message);
       const errorData = await response.json();
       console.error("Registration error:", errorData);
     }
